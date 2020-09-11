@@ -50,11 +50,8 @@ where
         } else {
             2038
         };
-        let min_year = if 1900 < now.start.year() - 70 {
-            now.start.year() - 70
-        } else {
-            1900
-        };
+        let min_year = 1900;
+
         let min_interval = Interval::starting_at(
             Moment(now.timezone().ymd(min_year, 1, 1).and_hms(0, 0, 0)),
             Grain::Second,
