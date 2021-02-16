@@ -577,6 +577,18 @@ pub fn rules_datetime(b: &mut RuleSetBuilder<Dimension>) -> RustlingResult<()> {
                  Ok(a.value().intersect(&day_period)?.form(a.value().form.clone()))
              }
     );
+    b.rule_2("<time-of-day> this morning|afternoon",
+             datetime_check!(form!(Form::TimeOfDay(_))),
+             b.reg(r#"this (morning|afternoon|evening)"#)?,
+             |a, text_match| {
+                 let day_period = if text_match.group(1) == "morning" {
+                     helpers::hour(0, false)?.span_to(&helpers::hour(12, false)?, false)?
+                 } else {
+                     helpers::hour(12, false)?.span_to(&helpers::hour(0, false)?, false)?
+                 };
+                 Ok(a.value().intersect(&day_period)?.form(a.value().form.clone()))
+             }
+    );
     b.rule_1_terminal("noon",
                       b.reg(r#"noon|midday"#)?,
                       |_| helpers::hour(12, false)
